@@ -1,0 +1,17 @@
+/* src/components/skix/Feed.css */
+
+.feed-container {
+  padding: 0;
+  margin: 0;
+}
+
+.feed-status {
+  padding: 40px 20px;
+  text-align: center;
+  color: #888;
+  font-size: 16px;
+}
+
+.feed-status.error {
+  color: #ff3b30;
+}

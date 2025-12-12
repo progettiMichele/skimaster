@@ -1,0 +1,111 @@
+/* src/components/skix/PollView.css */
+
+.poll-view-card {
+  border: 1px solid #e1e4e8;
+  border-radius: 12px;
+  padding: 16px;
+  background-color: #f9f9f9;
+  position: relative;
+}
+
+.poll-view-card.loading,
+.poll-view-card.error {
+  text-align: center;
+  padding: 20px;
+  color: #888;
+}
+
+.poll-view-card.error {
+  color: #ff3b30;
+}
+
+.poll-question {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+  color: #1c1c1e;
+}
+
+.poll-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.poll-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border: 1px solid #d1d1d6;
+  border-radius: 8px;
+  font-weight: 500;
+  color: #1c1c1e;
+  overflow: hidden;
+  cursor: pointer;
+  background-color: #fff;
+  transition: background-color 0.2s, border-color 0.2s;
+  -webkit-tap-highlight-color: transparent; /* Remove highlight on tap */
+}
+
+.poll-option:hover:not(:disabled) {
+  background-color: #f0f0f0;
+}
+
+.poll-option:disabled {
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.poll-option.voted {
+  border-color: #007aff; /* Highlight voted polls */
+}
+
+.poll-option.selected {
+  border-width: 2px;
+}
+
+.poll-option-text {
+  z-index: 2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-grow: 1;
+  text-align: left;
+}
+
+.poll-option-votes {
+  z-index: 2;
+  font-weight: 500;
+  color: #3c3c43;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+.poll-option-result-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background-color: #dbeafe; /* Light blue for the result bar */
+  z-index: 1;
+  border-radius: 6px; /* Match parent's border radius */
+  transition: width 0.5s ease-in-out;
+}
+
+.poll-footer {
+  margin-top: 12px;
+  text-align: right;
+  font-size: 14px;
+  color: #8a8a8e;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.poll-error-message {
+  color: #ff3b30;
+  font-size: 13px;
+  margin-right: 10px;
+}

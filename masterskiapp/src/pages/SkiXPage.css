@@ -1,0 +1,38 @@
+/* src/pages/SkiXPage.css */
+
+.skix-page-container {
+  width: 100%;
+  max-width: 600px; /* Max width for a feed-like layout */
+  margin: 0 auto;
+  background-color: #fff; /* Changed to white */
+  min-height: 100vh;
+}
+
+.skix-header {
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid #e1e4e8;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.skix-header h1 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  flex: 1;
+  text-align: center;
+}
+
+.back-btn-skix {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #007aff; /* Apple blue */
+}

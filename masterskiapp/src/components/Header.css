@@ -1,0 +1,246 @@
+/* Container esterno */
+.header-container {
+  position: fixed;
+  top: 1.5rem;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Barra Vetro */
+.glass-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 56rem;
+  padding: 0.75rem 1.5rem;
+  
+  background-color: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 9999px;
+  
+  box-shadow: 0 4px 15px -3px rgba(30, 58, 138, 0.05);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 51;
+}
+
+/* Logo */
+.logo {
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: #1e293b;
+  letter-spacing: -0.025em;
+  user-select: none;
+}
+.logo-dot { color: #2563eb; }
+
+/* --- DESKTOP NAVIGATION --- */
+.desktop-nav {
+  display: none;
+  gap: 20px;
+}
+
+.nav-link {
+  background: none;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  transition: color 0.2s;
+  padding: 5px 10px;
+}
+
+.nav-link:hover { color: #0f172a; }
+.nav-link.active { color: #2563eb; }
+
+/* --- RIGHT ACTIONS --- */
+.right-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative; /* Importante per il posizionamento del dropdown */
+}
+
+.user-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.75rem;
+  width: 2.75rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  border: 3px solid #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: transform 0.2s;
+  padding: 0;
+}
+.user-btn:hover { transform: scale(1.05); }
+
+/* Stile quando loggato */
+.user-btn.logged-in {
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+  border-color: #dbeafe;
+}
+
+.user-icon { width: 1.5rem; height: 1.5rem; color: #64748b; }
+
+.avatar-placeholder {
+  color: white;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+/* --- MENU DROPDOWN UTENTE (Nuovo) --- */
+.user-dropdown-menu {
+  position: absolute;
+  top: 120%;
+  right: 0;
+  width: 240px;
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px -10px rgba(0,0,0,0.15);
+  padding: 8px;
+  animation: popIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.95) translateY(-10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.dropdown-header {
+  padding: 12px 16px;
+  font-size: 0.85rem;
+  color: #64748b;
+  font-weight: 600;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background-color: #f1f5f9;
+  margin: 4px 0;
+}
+
+.dropdown-item {
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  color: #334155;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.1s;
+}
+
+.dropdown-item:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+.dropdown-item.logout {
+  color: #ef4444; /* Rosso */
+}
+
+.dropdown-item.logout:hover {
+  background-color: #fef2f2;
+}
+
+
+/* --- HAMBURGER BUTTON (Mobile) --- */
+.hamburger-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  padding: 5px;
+}
+.hamburger-btn svg { width: 28px; height: 28px; }
+
+/* --- MOBILE MENU NAVIGATION --- */
+.mobile-menu-dropdown {
+  position: absolute;
+  top: 110%;
+  right: 1.5rem;
+  width: 200px;
+  background-color: white;
+  border-radius: 16px;
+  padding: 10px;
+  box-shadow: 0 10px 40px -10px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  animation: slideDown 0.2s ease-out;
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.mobile-menu-dropdown button {
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #334155;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.mobile-menu-dropdown button:hover {
+  background-color: #f1f5f9;
+  color: #2563eb;
+}
+
+/* --- MEDIA QUERY --- */
+@media (min-width: 640px) {
+  .desktop-nav {
+    display: flex;
+  }
+  .hamburger-btn {
+    display: none;
+  }
+}
+
+/* ... resto del codice ... */
+
+/* Stile per il brand X */
+.x-brand {
+  font-family: sans-serif; /* O un font più specifico se vuoi */
+  font-weight: 900;
+  font-size: 1.1rem;
+  margin-left: 2px;
+  color: #0f172a; /* Nero X */
+}
+
+/* Quando è attivo */
+.nav-link.active .x-brand {
+  color: #2563eb;
+}

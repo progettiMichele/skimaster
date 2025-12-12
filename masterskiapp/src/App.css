@@ -1,0 +1,262 @@
+/* --- CONTAINER GENERALE --- */
+.app-container {
+  min-height: 100vh;
+  background-color: #f8fafc; /* Slate 50 */
+  color: #0f172a;
+  position: relative;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow-x: hidden; /* Previene scroll orizzontali indesiderati */
+}
+
+/* --- MAIN CONTENT AREA (NUOVA REGOLA) --- */
+main {
+  padding-top: 100px; /* Spazio per l'header fluttuante */
+  padding-bottom: 100px; /* Spazio in fondo per evitare che i contenuti siano attaccati al bordo */
+}
+
+
+/* --- DASHBOARD (Layout a Bolle Sparse) --- */
+.dashboard-container {
+  padding-left: 10px;
+  padding-right: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh; /* Centra verticalmente nello schermo */
+}
+
+/* Contenitore flessibile per le bolle */
+.stats-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start; /* Allinea in alto per gestire i margini sfalsati */
+  gap: 15px; /* Distanza di sicurezza tra i cerchi */
+  max-width: 330px; /* Larghezza contenuta per mantenere la formazione compatta su mobile */
+}
+
+/* --- IL CERCHIO (Style Bolla) --- */
+.stat-circle {
+  width: 115px;  /* Dimensione fissa e compatta */
+  height: 115px;
+  border-radius: 50%;
+  
+  /* Stile Vetro/Apple */
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  
+  /* Ombre morbide */
+  box-shadow: 
+    0 10px 20px -5px rgba(0, 0, 0, 0.05),
+    0 4px 6px -2px rgba(0, 0, 0, 0.02);
+  
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); /* Rimbalzo elastico */
+  cursor: pointer;
+  padding: 5px;
+  position: relative;
+}
+
+/* --- EFFETTO "SPARSI" (Zig-Zag) --- */
+/* Sposta in basso i cerchi pari (2° e 4°) per creare movimento */
+.stat-circle:nth-child(even) {
+  margin-top: 40px; 
+}
+
+/* Sposta leggermente in alto il 3° cerchio per non farlo sembrare allineato */
+.stat-circle:nth-child(3) {
+  margin-top: -10px;
+}
+
+/* Hover Effect: Si ingrandisce e viene in primo piano */
+.stat-circle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 20px 40px -10px rgba(37, 99, 235, 0.15);
+  z-index: 10;
+  background: white;
+  border-color: white;
+}
+
+/* --- TESTI DENTRO I CERCHI --- */
+.stat-value {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+/* Colore verde per i soldi */
+.money-value {
+  color: #059669; 
+}
+
+.stat-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.stat-unit {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #94a3b8;
+  margin-top: -2px;
+}
+
+/* --- BOTTONE FLUTTUANTE IN BASSO --- */
+.bottom-action-container {
+  position: fixed;
+  bottom: 30px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  z-index: 40;
+  pointer-events: none; /* Permette di cliccare ai lati del bottone */
+}
+
+.big-apple-btn {
+  pointer-events: auto; /* Riabilita il click sul bottone */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  
+  padding: 16px 32px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  
+  border-radius: 50px;
+  background: #0f172a; /* Nero elegante */
+  color: white;
+  border: none;
+  cursor: pointer;
+  
+  box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.4);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.big-apple-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.5);
+}
+
+.big-apple-btn:active {
+  transform: scale(0.95);
+}
+
+.plus-icon {
+  background: rgba(255,255,255,0.2);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  padding-bottom: 2px;
+}
+
+/* --- MODAL PER INSERIRE TARIFFA --- */
+.rate-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(15, 23, 42, 0.6); /* Sfondo scuro blurrato */
+  backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.rate-modal {
+  background: white;
+  padding: 24px;
+  border-radius: 24px;
+  width: 85%;
+  max-width: 320px;
+  text-align: center;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  transform: scale(1);
+  animation: popUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popUp {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.rate-modal h3 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  color: #1e293b;
+  font-size: 1.25rem;
+}
+
+.rate-input {
+  width: 100%;
+  font-size: 2.5rem; /* Numero bello grande */
+  font-weight: 700;
+  text-align: center;
+  border: 2px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 15px;
+  margin: 20px 0;
+  color: #059669;
+  background-color: #f8fafc;
+  transition: all 0.2s;
+}
+
+.rate-input:focus {
+  outline: none;
+  border-color: #059669;
+  background-color: white;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+}
+
+.rate-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-confirm {
+  flex: 1;
+  background: #059669;
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.btn-cancel {
+  flex: 1;
+  background: white;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+  padding: 14px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+}
