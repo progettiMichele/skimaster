@@ -5,11 +5,7 @@ import CreatePost from '../components/skix/CreatePost';
 import Feed from '../components/skix/Feed';
 import ProfilePage from './ProfilePage'; // Import the ProfilePage
 
-interface SkiXPageProps {
-  // onBack is not needed here as this is a main view
-}
-
-export default function SkiXPage({}: SkiXPageProps) {
+export default function SkiXPage() {
   const [viewingProfileId, setViewingProfileId] = useState<string | null>(null);
   const [postsRefreshKey, setPostsRefreshKey] = useState(0); // New state to trigger feed refresh
 

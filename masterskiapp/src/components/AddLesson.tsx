@@ -90,14 +90,14 @@ export default function AddLesson({ onBack }: AddLessonProps) {
     setStudents(newStudents);
   };
 
-  const updateStudent = (index: number, field: keyof StudentForm, value: any) => {
+  const updateStudent = (index: number, field: keyof StudentForm, value: string | number) => {
     const newStudents = [...students];
-    // @ts-ignore
+    // @ts-expect-error - This is a known issue with dynamic keys in TypeScript.
     newStudents[index][field] = value;
     setStudents(newStudents);
 
     // Se stiamo scrivendo il nome, gestiamo l'autocompletamento
-    if (field === 'nome') {
+    if (field === 'nome' && typeof value === 'string') {
       if (value.length > 0) {
         const filtered = allClients.filter(client => 
           client.nome.toLowerCase().includes(value.toLowerCase())
@@ -153,8 +153,12 @@ export default function AddLesson({ onBack }: AddLessonProps) {
       // NON usare alert() perché è bloccante
       onBack(); // Naviga indietro DOPO che il salvataggio è andato a buon fine
 
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+        if (err instanceof Error) {
+            setError(err.message);
+        } else {
+            setError("Si è verificato un errore sconosciuto.");
+        }
     } finally {
       setLoading(false); // Questo verrà eseguito in caso di errore, o dopo la navigazione
     }

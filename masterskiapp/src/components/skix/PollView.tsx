@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../../supabaseClient';
 import './PollView.css';
+import type { Poll } from '../../types';
+import type { User } from '@supabase/supabase-js';
 
 interface PollViewProps {
-  poll: {
-    id: number;
-    question: string;
-    options: Array<{ text: string; votes: number }>;
-  };
+  poll: Poll;
 }
 
 export default function PollView({ poll }: PollViewProps) {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [hasVoted, setHasVoted] = useState(false);
   const [userVote, setUserVote] = useState<number | null>(null);
   const [currentOptions, setCurrentOptions] = useState(poll.options);
@@ -36,6 +34,9 @@ export default function PollView({ poll }: PollViewProps) {
         .eq('user_id', user.id)
         .single();
 
+      if (fetchError && fetchError.code !== 'PGRST116') {
+        console.error('Error checking user vote:', fetchError);
+      }
       if (data) {
         setHasVoted(true);
         setUserVote(data.selected_option);
@@ -81,24 +82,27 @@ export default function PollView({ poll }: PollViewProps) {
       setCurrentOptions(newOptions);
       setHasVoted(true);
       setUserVote(optionIndex);
-    } catch (err: any) {
-      console.error('Error submitting vote:', err);
-      setError(err.message || 'Errore durante l\'invio del voto.');
+    } catch (err: unknown) {
+        if (err instanceof Error) {
+            console.error('Error submitting vote:', err);
+            setError(err.message || 'Errore durante l\'invio del voto.');
+        } else {
+            setError('Errore durante l\'invio del voto.');
+        }
     } finally {
       setLoading(false);
     }
   };
 
-  const totalVotes = currentOptions.reduce((acc: number, option: any) => acc + option.votes, 0);
+  const totalVotes = currentOptions.reduce((acc: number, option: { text: string, votes: number }) => acc + option.votes, 0);
 
   if (loading) return <div className="poll-view-card loading">Caricamento sondaggio...</div>;
-  if (error) return <div className="poll-view-card error">Errore: {error}</div>;
 
   return (
     <div className="poll-view-card">
       <p className="poll-question">{poll.question}</p>
       <div className="poll-options">
-        {currentOptions.map((option: any, index: number) => {
+        {currentOptions.map((option: { text: string, votes: number }, index: number) => {
           const percentage = totalVotes > 0 ? (option.votes / totalVotes) * 100 : 0;
           const isSelected = hasVoted && userVote === index;
 

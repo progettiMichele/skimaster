@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '../../supabaseClient';
 import Comment from './Comment';
 import './CommentSection.css';
+import type { Comment as CommentType } from '../../types';
+import type { User } from '@supabase/supabase-js';
 
 interface CommentSectionProps {
   postId: number;
@@ -10,12 +12,12 @@ interface CommentSectionProps {
 }
 
 export default function CommentSection({ postId, onNavigateToProfile, onCommentsUpdated }: CommentSectionProps) {
-  const [comments, setComments] = useState<any[]>([]);
+  const [comments, setComments] = useState<CommentType[]>([]);
   const [newCommentContent, setNewCommentContent] = useState('');
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -23,7 +25,7 @@ export default function CommentSection({ postId, onNavigateToProfile, onComments
     });
   }, []);
 
-  const fetchComments = async () => {
+  const fetchComments = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -31,27 +33,50 @@ export default function CommentSection({ postId, onNavigateToProfile, onComments
         .from('comments')
         .select(`
           id,
+          post_id,
           user_id,
           content,
-          created_at
+          created_at,
+          profiles (
+            id,
+            username,
+            full_name,
+            avatar_url
+          )
         `)
         .eq('post_id', postId)
         .order('created_at', { ascending: true });
 
       if (fetchError) throw fetchError;
-      setComments(data || []);
+      if (data) {
+        const formattedComments: CommentType[] = data.map((comment: any) => ({
+          id: comment.id,
+          post_id: comment.post_id,
+          user_id: comment.user_id,
+          content: comment.content,
+          created_at: comment.created_at,
+          profiles: Array.isArray(comment.profiles) ? comment.profiles[0] : comment.profiles,
+        }));
+        setComments(formattedComments);
+      } else {
+        setComments([]);
+      }
       onCommentsUpdated(postId, data?.length || 0);
-    } catch (err: any) {
-      console.error('Error fetching comments:', err);
-      setError(err.message || 'Errore durante il caricamento dei commenti.');
+    } catch (err: unknown) {
+        if (err instanceof Error) {
+            console.error('Error fetching comments:', err);
+            setError(err.message || 'Errore durante il caricamento dei commenti.');
+        } else {
+            setError('Errore durante il caricamento dei commenti.');
+        }
     } finally {
       setLoading(false);
     }
-  };
+  }, [postId, onCommentsUpdated]);
 
   useEffect(() => {
     fetchComments();
-  }, [postId]);
+  }, [fetchComments]);
 
   const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,9 +104,13 @@ export default function CommentSection({ postId, onNavigateToProfile, onComments
 
       setNewCommentContent('');
       await fetchComments(); // Re-fetch comments to show the new one
-    } catch (err: any) {
-      console.error('Error submitting comment:', err);
-      setError(err.message || 'Errore durante l\'invio del commento.');
+    } catch (err: unknown) {
+        if (err instanceof Error) {
+            console.error('Error submitting comment:', err);
+            setError(err.message || 'Errore durante l\'invio del commento.');
+        } else {
+            setError('Errore durante l\'invio del commento.');
+        }
     } finally {
       setSubmitting(false);
     }

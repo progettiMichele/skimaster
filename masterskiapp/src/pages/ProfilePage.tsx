@@ -1,4 +1,3 @@
-import React from 'react';
 import './ProfilePage.css';
 
 import ProfileHeader from '../components/skix/ProfileHeader'; // Import ProfileHeader

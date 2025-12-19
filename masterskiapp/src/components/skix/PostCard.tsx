@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import './PostCard.css';
 import PollView from './PollView';
 import CommentSection from './CommentSection'; // Import CommentSection
+import type { Poll } from '../../types';
 
 // Helper to format dates like "5h", "2d", etc.
 function timeAgo(dateString: string): string {
@@ -22,13 +23,27 @@ function timeAgo(dateString: string): string {
   return Math.floor(seconds) + "s";
 }
 
+interface FormattedPost {
+    id: number;
+    content: string;
+    image_url: string | null;
+    created_at: string;
+    user: {
+        id: string;
+        name: string;
+        avatar_url: string;
+    };
+    comment_count: number;
+    poll: Poll | null;
+}
+
 interface PostCardProps {
-  post: any; // Ideally, define a more specific Post type here
+  post: FormattedPost;
   onNavigateToProfile: (userId: string) => void;
 }
 
 export default function PostCard({ post, onNavigateToProfile }: PostCardProps) {
-  const { user, content, image_url, created_at, poll } = post; // Removed comment_count from destructuring
+  const { user, content, image_url, created_at, poll } = post;
   const [showComments, setShowComments] = useState(false);
   const [currentCommentCount, setCurrentCommentCount] = useState(post.comment_count); // State for dynamic comment count
 
@@ -38,7 +53,7 @@ export default function PostCard({ post, onNavigateToProfile }: PostCardProps) {
     }
   };
 
-  const handleCommentsUpdated = (postId: number, count: number) => {
+  const handleCommentsUpdated = (_postId: number, count: number) => {
     setCurrentCommentCount(count);
   };
 

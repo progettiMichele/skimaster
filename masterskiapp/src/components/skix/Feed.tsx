@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '../../supabaseClient';
 import PostCard from './PostCard';
 import './Feed.css';
+import type { FormattedPost } from '../../types';
 
 interface FeedProps {
   user_id?: string;
@@ -10,11 +11,11 @@ interface FeedProps {
 }
 
 export default function Feed({ user_id, onNavigateToProfile, postsRefreshKey }: FeedProps) {
-  const [posts, setPosts] = useState<any[]>([]);
+  const [posts, setPosts] = useState<FormattedPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchPosts = async () => {
+  const fetchPosts = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -51,9 +52,9 @@ export default function Feed({ user_id, onNavigateToProfile, postsRefreshKey }: 
 
       if(commentsError) console.error("Error fetching comment counts: ", commentsError);
 
-      const formattedPosts = postData?.map(post => {
+      const formattedPosts: FormattedPost[] = postData?.map((post: any) => {
         const profile = Array.isArray(post.profiles) ? post.profiles[0] : post.profiles;
-        const postCommentCount = commentsCount?.find((c: any) => c.post_id === post.id)?.comment_count || 0;
+        const postCommentCount = commentsCount?.find((c: { post_id: number; comment_count: number }) => c.post_id === post.id)?.comment_count || 0;
 
         return {
           id: post.id,
@@ -71,17 +72,21 @@ export default function Feed({ user_id, onNavigateToProfile, postsRefreshKey }: 
       }) || [];
 
       setPosts(formattedPosts);
-    } catch (err: any) {
-      console.error('Errore durante il recupero dei post:', err);
-      setError(err.message || 'Impossibile caricare i post.');
+    } catch (err: unknown) {
+        if (err instanceof Error) {
+            console.error('Errore durante il recupero dei post:', err);
+            setError(err.message || 'Impossibile caricare i post.');
+        } else {
+            setError('Impossibile caricare i post.');
+        }
     } finally {
       setLoading(false);
     }
-  };
+  }, [user_id]);
 
   useEffect(() => {
     fetchPosts();
-  }, [user_id, postsRefreshKey]);
+  }, [user_id, postsRefreshKey, fetchPosts]);
 
   if (loading) {
     return <div className="feed-status">Caricamento dei post...</div>;
@@ -97,7 +102,7 @@ export default function Feed({ user_id, onNavigateToProfile, postsRefreshKey }: 
 
   return (
     <div className="feed-container">
-      {posts.map(post => (
+      {posts.map((post: FormattedPost) => (
         <PostCard key={post.id} post={post} onNavigateToProfile={onNavigateToProfile} />
       ))}
     </div>

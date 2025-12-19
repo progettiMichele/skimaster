@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { supabase } from '../../supabaseClient';
 import './ProfileHeader.css';
+import type { Profile } from '../../types';
 
 interface ProfileHeaderProps {
   userId: string;
 }
 
 export default function ProfileHeader({ userId }: ProfileHeaderProps) {
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -18,16 +19,22 @@ export default function ProfileHeader({ userId }: ProfileHeaderProps) {
       try {
         const { data, error: fetchError } = await supabase
           .from('profiles')
-          .select('username, full_name, avatar_url')
+          .select('id, username, full_name, avatar_url')
           .eq('id', userId)
           .single();
 
         if (fetchError) throw fetchError;
 
-        setProfile(data);
-      } catch (err: any) {
-        console.error('Error fetching profile:', err);
-        setError(err.message || 'Error loading profile.');
+        if (data) {
+          setProfile(data as Profile);
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+            console.error('Error fetching profile:', err);
+            setError(err.message || 'Error loading profile.');
+        } else {
+            setError('Error loading profile.');
+        }
       } finally {
         setLoading(false);
       }

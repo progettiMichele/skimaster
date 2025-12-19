@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
 import Header from './components/Header';
 import ModalLogin from './components/ModalLogin';
@@ -8,6 +8,7 @@ import ClientsList from './components/ClientsList';
 import ProfileSettings from './components/ProfileSettings';
 // import CompleteProfileModal from './components/CompleteProfileModal';
 import './App.css';
+import type { Lesson, AppSession } from './types';
 
 interface Stats {
   totalHours: number;
@@ -22,11 +23,11 @@ function App() {
   // --- STATI DI NAVIGAZIONE E SESSIONE ---
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [currentView, setCurrentView] = useState<ViewType>('home');
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<AppSession>(null);
   // const [showCompleteProfileModal, setShowCompleteProfileModal] = useState(false); // Nuovo stato
 
   // --- STATI PER MODALI ---
-  const [isProfileSettingsOpen, setIsProfileSettingsOpen] = useState(false); // Nuovo
+  const [isProfileSettingsOpen, setIsProfileSettingsOpen] = useState(false);
   const [isRateModalOpen, setIsRateModalOpen] = useState(false);
 
   // --- STATI DATI ---
@@ -94,7 +95,7 @@ function App() {
     });
 
     return () => subscription.unsubscribe();
-  }, [checkAndCompleteProfile]);
+  }, []);
 
   // --- FUNZIONI LOGICHE ---
 
@@ -112,8 +113,7 @@ function App() {
       const lessonsByGroup = new Map<string, number>();
       let individualHours = 0;
 
-      data.forEach((lesson: any) => {
-        // La `any` è temporanea per via della modifica, si può creare un tipo LezioneSci
+      data.forEach((lesson: Partial<Lesson>) => {
         if (lesson.group_id) {
           if (!lessonsByGroup.has(lesson.group_id)) {
             lessonsByGroup.set(lesson.group_id, Number(lesson.durata_ore));
@@ -297,7 +297,8 @@ function App() {
         session={session}
       />
 
-      {/* 4. Modale Completa Profilo */}
+      {/* 4. Modale Completa Profilo (commentata) */}
+      {/*
       {session && (
         <CompleteProfileModal
           isOpen={showCompleteProfileModal}
@@ -306,6 +307,7 @@ function App() {
           onProfileCompleted={handleProfileCompleted}
         />
       )}
+      */}
     
     </div>
   );

@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { supabase } from '../../supabaseClient';
 import './Comment.css';
+import type { Comment as CommentType, Profile } from '../../types';
 
 // Helper to format dates like "5h", "2d", etc.
 function timeAgo(dateString: string): string {
@@ -22,17 +23,12 @@ function timeAgo(dateString: string): string {
 }
 
 interface CommentProps {
-  comment: {
-    id: number;
-    user_id: string;
-    content: string;
-    created_at: string;
-  };
+  comment: CommentType;
   onNavigateToProfile: (userId: string) => void;
 }
 
 export default function Comment({ comment, onNavigateToProfile }: CommentProps) {
-  const [author, setAuthor] = useState<any>(null);
+  const [author, setAuthor] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -41,15 +37,21 @@ export default function Comment({ comment, onNavigateToProfile }: CommentProps) 
       try {
         const { data, error: fetchError } = await supabase
           .from('profiles')
-          .select('username, full_name, avatar_url')
+          .select('id, username, full_name, avatar_url')
           .eq('id', comment.user_id)
           .single();
         
         if (fetchError) throw fetchError;
-        setAuthor(data);
-      } catch (err: any) {
+        if (data) {
+          setAuthor(data as Profile);
+        }
+      } catch (err: unknown) {
         console.error('Error fetching comment author profile:', err);
-        setError(err.message || 'Error loading author profile.');
+        if (err instanceof Error) {
+            setError(err.message);
+        } else {
+            setError('Error loading author profile.');
+        }
       } finally {
         setLoading(false);
       }

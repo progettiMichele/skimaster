@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '../supabaseClient';
 import './Header.css';
+import type { AppSession } from '../types';
 
 interface HeaderProps {
   onLoginClick: () => void;
   onNavigate: (view: 'home' | 'clients') => void; // Removed 'skix'
   currentView: 'home' | 'clients' | 'add-lesson'; // Removed 'skix'
-  session: any;
+  session: AppSession;
   onOpenProfile: () => void; // <--- QUESTA È LA RIGA CHE MANCAVA
 }
 

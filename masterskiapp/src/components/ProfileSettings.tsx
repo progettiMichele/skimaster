@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../supabaseClient';
 import './ModalLogin.css'; // Ricicliamo lo stile del modale login che è bello
 
 interface ProfileSettingsProps {
   isOpen: boolean;
   onClose: () => void;
-  session: any;
+  session: { user: { id: string } } | null;
 }
 
 export default function ProfileSettings({ isOpen, onClose, session }: ProfileSettingsProps) {
@@ -16,14 +16,8 @@ export default function ProfileSettings({ isOpen, onClose, session }: ProfileSet
   const [facebook, setFacebook] = useState('');
   const [bio, setBio] = useState('');
 
-  // Quando apro il modale, scarico i dati attuali
-  useEffect(() => {
-    if (isOpen && session) {
-      fetchProfile();
-    }
-  }, [isOpen, session]);
-
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
+    if (!session) return;
     setLoading(true);
     const { data, error } = await supabase
       .from('profiles')
@@ -39,10 +33,18 @@ export default function ProfileSettings({ isOpen, onClose, session }: ProfileSet
       setBio(data.bio || '');
     }
     setLoading(false);
-  };
+  }, [session]);
+
+  // Quando apro il modale, scarico i dati attuali
+  useEffect(() => {
+    if (isOpen && session) {
+      fetchProfile();
+    }
+  }, [isOpen, session, fetchProfile]);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!session) return;
     setLoading(true);
 
     const updates = {

@@ -66,8 +66,12 @@ export default function ModalLogin({ isOpen, onClose }: ModalLoginProps) {
         // Login riuscito -> Chiude il modale e sblocca l'app
         onClose();
       }
-    } catch (err: any) {
-      setError(err.message || 'Si è verificato un errore');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Si è verificato un errore sconosciuto');
+      }
     } finally {
       setLoading(false);
     }
